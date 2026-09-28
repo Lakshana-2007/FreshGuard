@@ -1,0 +1,186 @@
+{
+  "dataset_identity": {
+    "category": "Meat / Poultry \u2014 Chicken",
+    "dataset_name": "Fresh Chicken Breast Dynamic MAP Storage Dataset",
+    "source": "Research Publication Data",
+    "version": "1.0",
+    "local_path": "C:\\Users\\lakshana\\.gemini\\antigravity-ide\\brain\\d96bfa95-77dc-4155-acaf-c958ba0eaa8b\\scratch\\round3_data\\ds1_chicken",
+    "raw_data_available": true,
+    "files": [
+      "Parameters from survival models.xlsx",
+      "Raw data consumer test.xlsx",
+      "Raw data microbial counts.xlsx",
+      "Raw data Microbiota.xlsx"
+    ]
+  },
+  "data_size": {
+    "number_of_files": 4,
+    "number_of_microbial_rows": 27,
+    "number_of_consumer_rows": 1391,
+    "number_of_microbiota_rows": 81,
+    "number_of_columns": 11
+  },
+  "columns": [
+    {
+      "name": "Storage_day",
+      "dtype": "int",
+      "missing_count": 0,
+      "sample_values": [
+        0,
+        2,
+        4,
+        7,
+        9,
+        12
+      ],
+      "type": "numeric",
+      "feature_type": "prediction_time"
+    },
+    {
+      "name": "Storage temperature",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        4.0,
+        8.0,
+        15.0
+      ],
+      "type": "numeric",
+      "feature_type": "prediction_time"
+    },
+    {
+      "name": "GAS_O2",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        70.0,
+        65.0,
+        40.0
+      ],
+      "type": "numeric",
+      "feature_type": "prediction_time"
+    },
+    {
+      "name": "GAS_CO2",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        30.0,
+        35.0,
+        60.0
+      ],
+      "type": "numeric",
+      "feature_type": "prediction_time"
+    },
+    {
+      "name": "TVC_log10",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        3.5,
+        5.2,
+        7.1,
+        8.4
+      ],
+      "type": "numeric",
+      "feature_type": "experimental_only"
+    },
+    {
+      "name": "Pseudomonas_log10",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        2.8,
+        4.1,
+        6.9
+      ],
+      "type": "numeric",
+      "feature_type": "experimental_only"
+    }
+  ],
+  "data_quality": {
+    "missing_values_count": 0,
+    "duplicate_rows": 0,
+    "impossible_values": null
+  },
+  "experimental_unit": {
+    "unit_description": "Chicken breast fillet sample stored under controlled temperature and Modified Atmosphere Packaging (MAP)",
+    "repeated_measurements": true,
+    "group_columns": [
+      "Storage temperature",
+      "Storage_day"
+    ]
+  },
+  "storage_conditions": {
+    "temperature_c": {
+      "range": "4.0\u00b0C - 15.0\u00b0C",
+      "units": "\u00b0C"
+    },
+    "packaging": "MAP (Modified Atmosphere Packaging O2/CO2)",
+    "duration_days": "0 - 14 days"
+  },
+  "quality_variables": [
+    "Total Viable Count (TVC log CFU/g)",
+    "Pseudomonas count",
+    "Lactic Acid Bacteria",
+    "Enterobacteriaceae",
+    "Consumer Accept/Reject sensory score"
+  ],
+  "shelf_life_endpoint": {
+    "classification": "B. RSL derivable from documented experimental endpoint",
+    "failure_variable": "TVC_log10",
+    "failure_threshold": "TVC >= 7.0 log CFU/g (ICMSF microbiological safety threshold)",
+    "failure_time_days": "7.0 days at 4\u00b0C MAP",
+    "endpoint_type": "Microbiological threshold limit"
+  },
+  "target_construction": {
+    "target_status": "constructable",
+    "target_name": "remaining_shelf_life_days",
+    "target_definition": "Days remaining before TVC reaches 7.0 log CFU/g limit under specific storage temperature",
+    "target_formula": "RSL = max(0.0, Spoilage_Day(Temp) - Storage_day)",
+    "target_range_days": [
+      0.0,
+      7.0
+    ]
+  },
+  "leakage_audit": {
+    "safe_columns": [
+      "Storage_day",
+      "Storage temperature",
+      "GAS_O2",
+      "GAS_CO2"
+    ],
+    "leakage_risk_columns": [
+      "Consumer Accept/Reject"
+    ],
+    "experimental_only_columns": [
+      "TVC_log10",
+      "Pseudomonas_log10",
+      "Lactic_Acid_Bacteria"
+    ]
+  },
+  "prediction_time_features": {
+    "available_at_prediction_time": [
+      "storage_temperature_c",
+      "storage_duration_days",
+      "packaging_type"
+    ],
+    "experimental_only": [
+      "TVC_log10",
+      "Pseudomonas_log10",
+      "Microbiota_abundance"
+    ]
+  },
+  "split_strategy": {
+    "group_column": "Storage temperature",
+    "recommended_split": "GroupKFold by storage temperature / batch run",
+    "reason": "Prevents fillets from the same storage run appearing in both training and evaluation sets"
+  },
+  "category_specific_domain": {
+    "product": "Fresh Chicken Breast Fillet",
+    "temperature_range": "4\u00b0C - 15\u00b0C",
+    "packaging": "MAP / Sealed",
+    "max_shelf_life_days": 7.0
+  },
+  "usable_for_ml": true
+}

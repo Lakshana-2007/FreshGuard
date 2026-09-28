@@ -1,0 +1,110 @@
+{
+  "tomato": {
+    "target": "remaining_shelf_life_days",
+    "target_formula": "RSL = total_observed_shelf_life - storage_duration_days",
+    "group_column": "group_id",
+    "production_features": [
+      "food_type",
+      "nled_level",
+      "bwc_level",
+      "storage_temperature_c",
+      "humidity_pct",
+      "storage_duration_days",
+      "packaging_type"
+    ],
+    "laboratory_only_features": [
+      "TA",
+      "TSS",
+      "Ascorbic Acid",
+      "pH",
+      "Weight Loss %",
+      "Decay %"
+    ],
+    "leakage_columns": [
+      "total_observed_shelf_life",
+      "Marketability %"
+    ],
+    "dataset_row_count": 1684,
+    "valid_row_count": 1684,
+    "dropped_row_count": 0
+  },
+  "paneer": {
+    "target": "remaining_shelf_life_days",
+    "target_formula": "RSL = max(0.0, 9.0 - storage_duration_days)",
+    "group_column": "group_id",
+    "production_features": [
+      "food_type",
+      "storage_temperature_c",
+      "humidity_pct",
+      "storage_duration_days",
+      "packaging_type"
+    ],
+    "laboratory_only_features": [
+      "TPC",
+      "Coliform count",
+      "Yeast & Mold",
+      "Psychrophilic count",
+      "pH",
+      "Moisture %",
+      "Fat %"
+    ],
+    "leakage_columns": [
+      "Sensory Overall Acceptability"
+    ],
+    "dataset_row_count": 50,
+    "valid_row_count": 50,
+    "dropped_row_count": 0
+  },
+  "chicken": {
+    "target": "remaining_shelf_life_days",
+    "target_formula": "RSL = max(0.0, Spoilage_Day(Temp) - storage_duration_days)",
+    "group_column": "group_id",
+    "production_features": [
+      "food_type",
+      "storage_temperature_c",
+      "humidity_pct",
+      "storage_duration_days",
+      "packaging_type"
+    ],
+    "laboratory_only_features": [
+      "TVC_log10",
+      "Pseudomonas_log10",
+      "GAS_O2",
+      "GAS_CO2",
+      "Microbiota"
+    ],
+    "leakage_columns": [
+      "Consumer Accept/Reject"
+    ],
+    "dataset_row_count": 27,
+    "valid_row_count": 27,
+    "dropped_row_count": 0
+  },
+  "seafood": {
+    "target": "remaining_shelf_life_days",
+    "target_formula": "RSL = max(0.0, 3.0 - storage_duration_days)",
+    "group_column": "group_id",
+    "production_features": [
+      "food_type",
+      "species",
+      "storage_temperature_c",
+      "humidity_pct",
+      "storage_duration_days",
+      "packaging_type"
+    ],
+    "laboratory_only_features": [
+      "MQ1",
+      "TGS1"
+    ],
+    "leakage_columns": [
+      "Organoleptic_Score"
+    ],
+    "dataset_row_count": 6959,
+    "valid_row_count": 6959,
+    "dropped_row_count": 0
+  },
+  "avocado": {
+    "status": "BLOCKED",
+    "reason": "RAW DATA NOT AVAILABLE LOCALLY"
+  }
+}

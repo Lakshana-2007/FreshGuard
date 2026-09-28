@@ -1,0 +1,144 @@
+# M3 Dataset Checksums
+
+Generated: 2026-09-25
+
+
+## TOMATO
+Source: Dryad
+DOI: 10.5061/dryad.5mkkwh772
+Version: April 26, 2022
+URL: https://datadryad.org/dataset/doi:10.5061/dryad.5mkkwh772
+License: CC BY 4.0
+Citation: Shonte, Tigist Tadesse; Zewdie, Biruk; Woldetsadik, Kebede (2022). Data from: Shelf life and quality of tomato (Lycopersicon esculentum Mill.) fruits as affected by neem leaf extract dipping and beeswax coating [Dataset]. Dryad. https://doi.org/10.5061/dryad.5mkkwh772
+Directory: D:\infosys\project 1\backend\app\ml\data\raw\tomato
+File count: 9
+
+  AA_Tomato_NLED_BWC.xlsx
+    SHA256: 75b268ee15d96a799872ea0c7e4df9b2cf771c91a7b9b6cf5a2132ab899856ab
+    Size: 18687 bytes
+
+  Decay_Tomato_NLED_BWC.xlsx
+    SHA256: 06ac3414235384a3680b0da2724ff793a16ccd18dee3675ef6cbe8f1173113a1
+    Size: 19585 bytes
+
+  Marketability_Tomato_NLED_BWC.xlsx
+    SHA256: ee84533870b527c69337209b0fce5bc872542b0abcafd8617091fd083a7ca41b
+    Size: 17710 bytes
+
+  README_file.docx
+    SHA256: c6c70d665a1ffd50653196d76108b8b51ba6651995132dca3cc7d29afc696d81
+    Size: 12652 bytes
+
+  Shelflife_Tomato_NLED_BWC.xlsx
+    SHA256: 778553737d6171539c671214b3bf2b97aa6749da08759babd399fc3e8713a6be
+    Size: 15970 bytes
+
+  TA_Tomato_NLED_BWC.xlsx
+    SHA256: 64833faa13d93f6a924d3e3df8645c4ad978ea3043be40d906c7f40770725b68
+    Size: 21277 bytes
+
+  TSS_Tomato_NLED_BWC.xlsx
+    SHA256: 17c389b7e200b99f590d4c4197908daaef7abd73c84017a0f1a2c1e6b307ff39
+    Size: 18188 bytes
+
+  WL_Tomato_NLED_BWC.xlsx
+    SHA256: 2b8c6ce7bdfaaa336d62e07c2bc7dd2316bd3af14cd2ccb14263e4fd4fc525bb
+    Size: 18497 bytes
+
+  pH_Tomato_NLED_BWC.xlsx
+    SHA256: 0d28d3981f0e691dfd0d0707e64009643850067700657e2babcf9ce8e466df8b
+    Size: 18214 bytes
+
+  Total: 9 files, 160780 bytes (157.0 KB)
+
+## PANEER
+Source: Mendeley Data
+DOI: 10.17632/rd9dmr54xx.2
+Version: 2
+URL: https://data.mendeley.com/datasets/rd9dmr54xx/2
+License: CC BY 4.0
+Citation: Deep, A., Jindal, N. & Prasad, K. (2026). Storage study data for paneer in controlled RH and Temperature environment [Dataset]. Mendeley Data. https://doi.org/10.17632/rd9dmr54xx.2
+Directory: D:\infosys\project 1\backend\app\ml\data\raw\paneer
+File count: 2
+
+  20241118_DataLog.csv
+    SHA256: e9536ba25ddd268556633f9d407fc7ceee9c483cebeb0dab814fae7a796eca76
+    Size: 68695 bytes
+
+  20241230_Testing_Data.xlsx
+    SHA256: 85aa7f7cf7c49a8452fea6a9371f79941085bd4a7c38fe35a465a2d6d0f75c64
+    Size: 29485 bytes
+
+  Total: 2 files, 98180 bytes (95.9 KB)
+
+## SEAFOOD
+Source: Mendeley Data
+DOI: 10.17632/vx4ptwk3pb.1
+Version: 1
+URL: https://data.mendeley.com/datasets/vx4ptwk3pb/1
+License: CC BY 4.0
+Citation: Prasetyo, E. et al. (2024). Dataset for Fish's Freshness Problems [Dataset]. Mendeley Data. https://doi.org/10.17632/vx4ptwk3pb.1
+Directory: D:\infosys\project 1\backend\app\ml\data\raw\seafood
+File count: 15
+
+  19-01-2024(Makarel).xlsx
+    SHA256: 062d2c4e901ea8094b9e1ad320542d48edeac0e85c28e88a5fb1228717ed7c55
+    Size: 27236 bytes
+
+  19-01-2024(Mujair).xlsx
+    SHA256: f20c1933847c396d07fd23fa4fa8951bef61198de1363368bc63f78100690da4
+    Size: 27738 bytes
+
+  19-01-2024(Tongkol).xlsx
+    SHA256: e6560cf10a067066f55e1e33c4cac575e623a4f3a9d91405a18e5b9663ae18b9
+    Size: 27626 bytes
+
+  20-01-2024(MakarelSesi1).xlsx
+    SHA256: c1e9a011ae26138110453f1fdf0fc663e986dca30c88b026f42874eec2cdece2
+    Size: 21215 bytes
+
+  20-01-2024(MakarelSesi2).xlsx
+    SHA256: c08f986ff4cc27d15c10ade58b102d476c0bfc8bb415d16cc6e9a981f9a0558d
+    Size: 21479 bytes
+
+  20-01-2024(MujairSesi1).xlsx
+    SHA256: ba5dd1a3d2fbade13ce0d31c1c7b503f81ad05ed44712d1602dfc6dd883f0044
+    Size: 21264 bytes
+
+  20-01-2024(MujairSesi2).xlsx
+    SHA256: 00b74e73ecc7d967d0e8198fbc13ca1bd1ba64b172d7578ff5b1af762a5dce1e
+    Size: 21557 bytes
+
+  20-01-2024(TongkolSesi1).xlsx
+    SHA256: 2ff0deeda78ccbb9460179d0ec860341e6f8a4d81fbf6ef1699bd35a3734a183
+    Size: 21373 bytes
+
+  20-01-2024(TongkolSesi2).xlsx
+    SHA256: f80ec02727cac0db7d0f382595bf4cc9449742410e919d233abad62cc402f526
+    Size: 21369 bytes
+
+  21-01-2024(MakarelSesi1).xlsx
+    SHA256: 43a49718f907b87930f8579b59d15ac5c0bf0f6cbfe1868f60fb2b646f5f6c50
+    Size: 21358 bytes
+
+  21-01-2024(MakarelSesi2).xlsx
+    SHA256: 545f48ded38ec1208bfc6df63ee19b25ac3ef30d5ca8a507ff8e9d0b4ed394de
+    Size: 21443 bytes
+
+  21-01-2024(MujairSesi1).xlsx
+    SHA256: 45c84a7d1d33f7846ec977acf9c5f704ae300d63627d4efeb895ec979997d99f
+    Size: 21285 bytes
+
+  21-01-2024(MujairSesi2).xlsx
+    SHA256: 2f490c488f3b94debb0208fa95e1e8b359ce83b3710784af4b77c540cdd30b77
+    Size: 21545 bytes
+
+  21-01-2024(TongkolSesi1).xlsx
+    SHA256: bb5a1a4d4f6dbf37b7e268e5f936348dc08f46aae0144c91e7a1ccdcb84f09a1
+    Size: 22028 bytes
+
+  21-01-2024(TongkolSesi2).xlsx
+    SHA256: fcc351b3c7c71c0d60662eb2e684cb3a98f20dc8717bd97bbc6738e44cfed0c1
+    Size: 22186 bytes
+
+  Total: 15 files, 340702 bytes (332.7 KB)

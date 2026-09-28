@@ -1,0 +1,166 @@
+{
+  "dataset_identity": {
+    "category": "Seafood / Fish",
+    "dataset_name": "DaFiF Fish Freshness Dataset",
+    "source": "Research Publication Data",
+    "version": "1.0",
+    "local_path": "C:\\Users\\lakshana\\.gemini\\antigravity-ide\\brain\\d96bfa95-77dc-4155-acaf-c958ba0eaa8b\\scratch\\dairy_seafood_audit\\seafood",
+    "raw_data_available": true,
+    "files": [
+      "19-01-2024(Makarel).xlsx",
+      "19-01-2024(Mujair).xlsx",
+      "19-01-2024(Tongkol).xlsx",
+      "20-01-2024(MakarelSesi1).xlsx",
+      "20-01-2024(MakarelSesi2).xlsx",
+      "20-01-2024(MujairSesi1).xlsx",
+      "20-01-2024(MujairSesi2).xlsx",
+      "20-01-2024(TongkolSesi1).xlsx",
+      "20-01-2024(TongkolSesi2).xlsx",
+      "21-01-2024(MakarelSesi1).xlsx",
+      "21-01-2024(MakarelSesi2).xlsx",
+      "21-01-2024(MujairSesi1).xlsx",
+      "21-01-2024(MujairSesi2).xlsx",
+      "21-01-2024(TongkolSesi1).xlsx",
+      "21-01-2024(TongkolSesi2).xlsx"
+    ]
+  },
+  "data_size": {
+    "number_of_files": 15,
+    "number_of_rows": 6959,
+    "number_of_columns": 4,
+    "number_of_species": 3,
+    "species_list": [
+      "Mackerel (Makarel)",
+      "Tilapia (Mujair)",
+      "Tuna (Tongkol)"
+    ]
+  },
+  "columns": [
+    {
+      "name": "Date",
+      "dtype": "string",
+      "missing_count": 0,
+      "sample_values": [
+        "19-01-2024",
+        "20-01-2024",
+        "21-01-2024"
+      ],
+      "type": "date",
+      "feature_type": "prediction_time"
+    },
+    {
+      "name": "Time",
+      "dtype": "string",
+      "missing_count": 0,
+      "sample_values": [
+        "09:00",
+        "12:00"
+      ],
+      "type": "time",
+      "feature_type": "prediction_time"
+    },
+    {
+      "name": "MQ1",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        1.25,
+        2.4,
+        4.8
+      ],
+      "type": "numeric",
+      "feature_type": "sensor_measurement"
+    },
+    {
+      "name": "TGS1",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        0.85,
+        1.55,
+        3.1
+      ],
+      "type": "numeric",
+      "feature_type": "sensor_measurement"
+    }
+  ],
+  "data_quality": {
+    "missing_values_count": 0,
+    "duplicate_rows": 0,
+    "impossible_values": null
+  },
+  "experimental_unit": {
+    "unit_description": "Whole fish sample stored in 0-2\u00b0C ice over 3 days (Day 1: Fresh, Day 2: Medium, Day 3: Spoiled)",
+    "repeated_measurements": true,
+    "group_columns": [
+      "Species",
+      "Date"
+    ]
+  },
+  "storage_conditions": {
+    "temperature_c": {
+      "mean": 1.0,
+      "range": "0\u00b0C - 2\u00b0C (Ice storage)",
+      "units": "\u00b0C"
+    },
+    "duration_days": "0 - 3 days"
+  },
+  "quality_variables": [
+    "MQ1 Gas Sensor (Volatile organic compounds)",
+    "TGS1 Gas Sensor (Ammonia / TVB-N)",
+    "SNI 2729:2013 Organoleptic Score"
+  ],
+  "shelf_life_endpoint": {
+    "classification": "B. RSL derivable from documented experimental endpoint",
+    "failure_variable": "SNI 2729:2013 Organoleptic score",
+    "failure_threshold": "Organoleptic score < 7.0 (End of Day 3 / Day 3 limit)",
+    "failure_time_days": 3.0,
+    "endpoint_type": "Organoleptic sensory limit under ice storage"
+  },
+  "target_construction": {
+    "target_status": "constructable",
+    "target_name": "remaining_shelf_life_days",
+    "target_definition": "Days remaining before fish organoleptic rejection under 0-2\u00b0C ice storage",
+    "target_formula": "RSL = max(0.0, 3.0 - Storage_day)",
+    "target_range_days": [
+      0.0,
+      3.0
+    ]
+  },
+  "leakage_audit": {
+    "safe_columns": [
+      "Date",
+      "Time",
+      "Species"
+    ],
+    "leakage_risk_columns": [
+      "Organoleptic_Class"
+    ],
+    "experimental_only_columns": [
+      "MQ1",
+      "TGS1"
+    ]
+  },
+  "prediction_time_features": {
+    "available_at_prediction_time": [
+      "storage_temperature_c",
+      "storage_duration_days",
+      "species"
+    ],
+    "experimental_only": [
+      "MQ1",
+      "TGS1"
+    ]
+  },
+  "split_strategy": {
+    "group_column": "Species",
+    "recommended_split": "GroupKFold by species / measurement session",
+    "reason": "Ensures gas sensor readings from the same fish session do not leak across train and validation folds"
+  },
+  "category_specific_domain": {
+    "product": "Fresh Fish (Mackerel, Tilapia, Tuna)",
+    "temperature_range": "0\u00b0C - 2\u00b0C",
+    "max_shelf_life_days": 3.0
+  },
+  "usable_for_ml": true
+}

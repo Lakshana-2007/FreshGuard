@@ -1,0 +1,61 @@
+{
+  "tomato": {
+    "temperature_min": 20.0,
+    "temperature_max": 25.0,
+    "humidity_min": 65.0,
+    "humidity_max": 75.0,
+    "storage_duration_min": 0.0,
+    "storage_duration_max": 35.0,
+    "allowed_categories": [
+      "tomato"
+    ],
+    "allowed_packaging": [
+      "uncoated",
+      "beeswax_coated"
+    ]
+  },
+  "paneer": {
+    "temperature_min": 4.0,
+    "temperature_max": 8.0,
+    "humidity_min": 30.0,
+    "humidity_max": 50.0,
+    "storage_duration_min": 0.0,
+    "storage_duration_max": 15.0,
+    "allowed_categories": [
+      "paneer"
+    ],
+    "allowed_packaging": [
+      "sealed"
+    ]
+  },
+  "chicken": {
+    "temperature_min": 4.0,
+    "temperature_max": 15.0,
+    "humidity_min": 70.0,
+    "humidity_max": 80.0,
+    "storage_duration_min": 0.0,
+    "storage_duration_max": 14.0,
+    "allowed_categories": [
+      "chicken"
+    ],
+    "allowed_packaging": [
+      "modified_atmosphere"
+    ]
+  },
+  "seafood": {
+    "temperature_min": 0.0,
+    "temperature_max": 2.0,
+    "humidity_min": 80.0,
+    "humidity_max": 90.0,
+    "storage_duration_min": 0.0,
+    "storage_duration_max": 3.0,
+    "allowed_species": [
+      "mackerel",
+      "tilapia",
+      "tuna"
+    ],
+    "allowed_packaging": [
+      "open"
+    ]
+  }
+}

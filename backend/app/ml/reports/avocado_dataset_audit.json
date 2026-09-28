@@ -1,0 +1,25 @@
+{
+  "dataset_identity": {
+    "category": "Avocado",
+    "dataset_name": "Hass Avocado Storage Dataset",
+    "source": "Audit Target",
+    "version": "1.0",
+    "local_path": null,
+    "raw_data_available": false,
+    "files": []
+  },
+  "status_note": "RAW DATA NOT AVAILABLE LOCALLY",
+  "data_size": {
+    "number_of_files": 0,
+    "number_of_rows": 0,
+    "number_of_columns": 0,
+    "number_of_experimental_units": 0
+  },
+  "columns": [],
+  "target_construction": {
+    "target_status": "not_constructable",
+    "target_name": null,
+    "reason": "Raw dataset is not present locally on filesystem. No synthetic data or unverified inferences created per project rules."
+  },
+  "usable_for_ml": false
+}

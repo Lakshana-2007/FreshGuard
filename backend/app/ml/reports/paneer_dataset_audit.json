@@ -1,0 +1,197 @@
+{
+  "dataset_identity": {
+    "category": "Dairy / Paneer",
+    "dataset_name": "Paneer Storage Study (Mendeley DOI: 10.17632/rd9dmr54xx.2)",
+    "source": "Mendeley Data Repository",
+    "version": "2.0",
+    "local_path": "d:\\infosys\\scratch\\paneer_data",
+    "raw_data_available": true,
+    "files": [
+      "20241118_DataLog.csv",
+      "20241230_Testing_Data.xlsx"
+    ]
+  },
+  "data_size": {
+    "number_of_files": 2,
+    "number_of_rows": 99,
+    "number_of_datalog_rows": 1950,
+    "number_of_columns": 18,
+    "number_of_experimental_units": 99,
+    "storage_conditions_monitored": "7\u00b0C, 37% RH"
+  },
+  "columns": [
+    {
+      "name": "Storage_day",
+      "dtype": "int",
+      "missing_count": 0,
+      "sample_values": [
+        0,
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ],
+      "type": "numeric",
+      "feature_type": "prediction_time"
+    },
+    {
+      "name": "Titratable_Acidity",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        0.21,
+        0.28,
+        0.45
+      ],
+      "type": "numeric",
+      "feature_type": "experimental_only"
+    },
+    {
+      "name": "Free_Fatty_Acids",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        0.12,
+        0.24,
+        0.55
+      ],
+      "type": "numeric",
+      "feature_type": "experimental_only"
+    },
+    {
+      "name": "Tyrosine_content",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        0.15,
+        0.35,
+        0.88
+      ],
+      "type": "numeric",
+      "feature_type": "experimental_only"
+    },
+    {
+      "name": "TPC_log10",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        3.2,
+        4.5,
+        6.8
+      ],
+      "type": "numeric",
+      "feature_type": "experimental_only"
+    },
+    {
+      "name": "Sensory_Overall_Acceptability",
+      "dtype": "float",
+      "missing_count": 0,
+      "sample_values": [
+        8.5,
+        7.2,
+        5.8,
+        4.0
+      ],
+      "type": "numeric",
+      "feature_type": "quality_variable"
+    }
+  ],
+  "data_quality": {
+    "missing_values_count": 0,
+    "duplicate_rows": 0,
+    "impossible_values": null
+  },
+  "experimental_unit": {
+    "unit_description": "Paneer sample stored in domestic refrigerator at 7\u00b0C, 37% RH",
+    "repeated_measurements": true,
+    "group_columns": [
+      "Storage_day",
+      "Replicate"
+    ]
+  },
+  "storage_conditions": {
+    "temperature_c": {
+      "mean": 7.0,
+      "range": "6.5\u00b0C - 7.5\u00b0C",
+      "units": "\u00b0C"
+    },
+    "humidity_pct": {
+      "mean": 37.0,
+      "range": "35% - 40% RH",
+      "units": "%"
+    },
+    "packaging": "LDPE food grade pouch"
+  },
+  "quality_variables": [
+    "Titratable Acidity",
+    "Free Fatty Acids (% oleic)",
+    "Tyrosine Content (mg/100g)",
+    "TPC (log CFU/g)",
+    "Yeast & Mold",
+    "Psychrophilic count",
+    "Sensory Overall Acceptability (9-point hedonic)"
+  ],
+  "shelf_life_endpoint": {
+    "classification": "B. RSL derivable from documented experimental endpoint",
+    "failure_variable": "Sensory Overall Acceptability",
+    "failure_threshold": "Score < 6.0 (Limit of acceptable quality)",
+    "failure_time_days": 9.0,
+    "endpoint_type": "Sensory acceptability limit"
+  },
+  "target_construction": {
+    "target_status": "constructable",
+    "target_name": "remaining_shelf_life_days",
+    "target_definition": "Days remaining before paneer sensory acceptability falls below 6.0 under 7\u00b0C storage",
+    "target_formula": "RSL = max(0.0, 9.0 - Storage_day)",
+    "target_range_days": [
+      0.0,
+      9.0
+    ]
+  },
+  "leakage_audit": {
+    "safe_columns": [
+      "Storage_day",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "leakage_risk_columns": [
+      "Sensory_Overall_Acceptability"
+    ],
+    "experimental_only_columns": [
+      "Titratable_Acidity",
+      "Free_Fatty_Acids",
+      "Tyrosine_content",
+      "TPC_log10"
+    ]
+  },
+  "prediction_time_features": {
+    "available_at_prediction_time": [
+      "storage_temperature_c",
+      "humidity_pct",
+      "storage_duration_days",
+      "packaging_type"
+    ],
+    "experimental_only": [
+      "Titratable_Acidity",
+      "Free_Fatty_Acids",
+      "Tyrosine_content",
+      "TPC_log10"
+    ]
+  },
+  "split_strategy": {
+    "group_column": "Storage_day",
+    "recommended_split": "GroupKFold by sampling day / batch replicate",
+    "reason": "Ensures timepoints from the same experimental storage run do not leak across train and validation splits"
+  },
+  "category_specific_domain": {
+    "product": "Paneer (Indian Cottage Cheese)",
+    "temperature_range": "4\u00b0C - 8\u00b0C",
+    "humidity_range": "30% - 50% RH",
+    "max_shelf_life_days": 9.0
+  },
+  "usable_for_ml": true
+}

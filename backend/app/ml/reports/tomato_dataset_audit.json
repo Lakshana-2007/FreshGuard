@@ -1,0 +1,193 @@
+{
+  "dataset_identity": {
+    "category": "Tomato",
+    "dataset_name": "Dryad Tomato Storage and Shelf-Life Dataset",
+    "source": "Dryad Digital Repository (DOI: 10.5061/dryad.xxxx)",
+    "version": "1.0",
+    "local_path": "d:\\infosys\\project 1\\dataset",
+    "raw_data_available": true,
+    "files": [
+      "AA_Tomato_NLED_BWC.xlsx",
+      "Decay_Tomato_NLED_BWC.xlsx",
+      "Marketability_Tomato_NLED_BWC.xlsx",
+      "pH_Tomato_NLED_BWC.xlsx",
+      "Shelflife_Tomato_NLED_BWC.xlsx",
+      "TA_Tomato_NLED_BWC.xlsx",
+      "TSS_Tomato_NLED_BWC.xlsx",
+      "WL_Tomato_NLED_BWC.xlsx"
+    ]
+  },
+  "data_size": {
+    "number_of_files": 8,
+    "number_of_rows": 48,
+    "number_of_columns": 5,
+    "number_of_experimental_units": 48,
+    "number_of_replicates": 4,
+    "number_of_treatments": 12
+  },
+  "columns": [
+    {
+      "name": "Neem leaf extract dipping",
+      "dtype": "string",
+      "missing_count": 0,
+      "sample_values": [
+        "NLED0",
+        "NLED10",
+        "NLED20"
+      ],
+      "type": "categorical",
+      "feature_type": "prediction_time"
+    },
+    {
+      "name": "Beeswax coating",
+      "dtype": "string",
+      "missing_count": 0,
+      "sample_values": [
+        "BWC0",
+        "BWC10",
+        "BWC20"
+      ],
+      "type": "categorical",
+      "feature_type": "prediction_time"
+    },
+    {
+      "name": "Treatments",
+      "dtype": "string",
+      "missing_count": 0,
+      "sample_values": [
+        "NLED0BWC0",
+        "NLED10BWC20"
+      ],
+      "type": "categorical",
+      "feature_type": "prediction_time"
+    },
+    {
+      "name": "rep",
+      "dtype": "int",
+      "missing_count": 0,
+      "sample_values": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "type": "numeric",
+      "feature_type": "group_column"
+    },
+    {
+      "name": "shelf-life",
+      "dtype": "int",
+      "missing_count": 0,
+      "sample_values": [
+        11,
+        15,
+        22,
+        28
+      ],
+      "type": "numeric",
+      "feature_type": "target"
+    }
+  ],
+  "data_quality": {
+    "missing_values_count": 0,
+    "duplicate_rows": 0,
+    "impossible_values": null,
+    "corrupted_records": 0
+  },
+  "experimental_unit": {
+    "unit_description": "Batch of 4 tomato fruits per treatment replicate",
+    "repeated_measurements": false,
+    "group_columns": [
+      "Treatments",
+      "rep"
+    ]
+  },
+  "storage_conditions": {
+    "temperature_c": {
+      "range": "20-25\u00b0C (Ambient)",
+      "units": "\u00b0C"
+    },
+    "humidity_pct": {
+      "range": "65-75% RH",
+      "units": "%"
+    },
+    "packaging": "Uncoated vs. Beeswax coated (BWC)",
+    "treatment": "Neem Leaf Extract Dipping (NLED) x Beeswax Coating (BWC)"
+  },
+  "quality_variables": [
+    "Titratable Acidity (TA)",
+    "Total Soluble Solids (TSS)",
+    "Weight Loss (WL)",
+    "pH",
+    "Decay %",
+    "Marketability %",
+    "Ascorbic Acid (AA)"
+  ],
+  "shelf_life_endpoint": {
+    "classification": "A. Direct RSL target available",
+    "failure_variable": "shelf-life",
+    "failure_threshold": "Loss of marketability / initiation of fruit decay",
+    "failure_time_days": "11 - 28 days depending on treatment",
+    "endpoint_type": "Sensory and physical decay endpoint"
+  },
+  "target_construction": {
+    "target_status": "constructable",
+    "target_name": "remaining_shelf_life_days",
+    "target_definition": "Remaining days of marketable shelf life from observation time t",
+    "target_formula": "RSL = Total_Observed_Shelf_Life - Storage_Duration_Days",
+    "target_range_days": [
+      0,
+      28
+    ]
+  },
+  "leakage_audit": {
+    "safe_columns": [
+      "Neem leaf extract dipping",
+      "Beeswax coating",
+      "Treatments",
+      "rep"
+    ],
+    "leakage_risk_columns": [
+      "shelf-life",
+      "Decay % at day t"
+    ],
+    "experimental_only_columns": [
+      "TAat4",
+      "TSSat4",
+      "WLat4",
+      "pHat4",
+      "AAat4"
+    ]
+  },
+  "prediction_time_features": {
+    "available_at_prediction_time": [
+      "Neem leaf extract dipping",
+      "Beeswax coating",
+      "storage_temperature_c",
+      "storage_duration_days"
+    ],
+    "experimental_only": [
+      "TA",
+      "TSS",
+      "Ascorbic Acid",
+      "pH",
+      "Weight Loss %"
+    ]
+  },
+  "split_strategy": {
+    "group_column": "Treatments",
+    "recommended_split": "GroupKFold by Treatment (12 treatment combinations split into train/test)",
+    "reason": "Prevents tomatoes from the same treatment replicate group appearing in both train and test sets"
+  },
+  "category_specific_domain": {
+    "temperature_range": "20\u00b0C - 25\u00b0C",
+    "humidity_range": "60% - 80%",
+    "max_storage_days": 28,
+    "packaging_types": [
+      "uncoated",
+      "beeswax_coated",
+      "neem_dipped"
+    ]
+  },
+  "usable_for_ml": true
+}
