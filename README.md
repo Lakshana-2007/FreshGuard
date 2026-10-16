@@ -86,3 +86,30 @@ M3 endpoints:
 - `GET /m3/recommendations/{prediction_id}`
 - `GET /m3/analytics`
 - `GET /m3/rotation-suggestions`
+
+## Streamlit demo
+
+`streamlit_app.py` is a status-only demo. It calls the separately hosted
+FastAPI backend's `GET /health` endpoint; it does not implement the React
+application's login, inventory, reporting, or M1–M4 workflows.
+
+Run it locally from this repository root:
+
+```powershell
+python -m pip install -r requirements.txt
+$env:API_BASE_URL = "http://localhost:8000"
+python -m streamlit run streamlit_app.py
+```
+
+To deploy on Streamlit Community Cloud, select this repository and the
+`demo/streamlit-status` branch, use `streamlit_app.py` as the entry point, and
+configure the app secret below with the public HTTPS origin of a separately
+hosted FastAPI backend:
+
+```toml
+API_BASE_URL = "https://your-fastapi-service.example.com"
+```
+
+Without that secret, the page honestly reports that the backend is not
+configured. Streamlit Cloud does not host the FastAPI backend or persistent
+database; do not use an ephemeral local database for persistent user records.
