@@ -23,6 +23,9 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 # Set test environment before importing app
 os.environ["JWT_SECRET"] = "test-secret-key-integration"
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+os.environ["CORS_ORIGINS"] = (
+    "https://freshguard-frontend-qq1l.onrender.com,http://localhost:5173"
+)
 
 from app.database import Base, get_db
 from app.main import app

@@ -1,6 +1,9 @@
-export const API_BASE_URL = (
-  import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://127.0.0.1:8000" : "")
-).replace(/\/+$/, "");
+import { resolveApiBaseUrl } from "./apiBase.js";
+
+export const API_BASE_URL = resolveApiBaseUrl(
+  import.meta.env.VITE_API_URL,
+  import.meta.env.DEV,
+);
 
 async function request(path, options = {}) {
   const { headers, ...restOptions } = options;

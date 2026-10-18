@@ -85,34 +85,30 @@ API authorization. Before creating services:
    private environment-variable prompt. Do not send it in chat or commit it.
 4. Keep Render's generated `JWT_SECRET`. Do not expose it in build logs or the
    browser bundle.
-5. The Blueprint's CORS and Vite API values assume the service URLs
-   `freshguard-frontend.onrender.com` and `freshguard-api.onrender.com`. If
-   Render assigns different hostnames because of a name collision, update
-   `CORS_ORIGINS` on the API and `VITE_API_URL` on the static site to those exact
-   HTTPS origins, then redeploy the static site.
+5. The current assigned service URLs are
+   `https://freshguard-frontend-qq1l.onrender.com` and
+   `https://freshguard-api-mp6c.onrender.com`. Set `CORS_ORIGINS` on the API to
+   the exact frontend origin and `VITE_API_URL` on the static site to the API
+   origin. Restart/redeploy the API after changing CORS; rebuild/redeploy the
+   static site after changing Vite's build-time value.
 
 The API applies the existing Alembic migrations at service startup. The latest
 M2 history migration is additive; no database reset or destructive migration is
 part of this deployment. First startup, database connectivity, and the public
 health endpoint still need verification after the Blueprint is authorized.
 
-## Verification status
+## Production hostname correction
 
-- Starting branch and commit: `deploy/freshguard-free` at
-  `08d682444a9babd78bde531e0b82b884d07348f6`; this branch previously matched
-  GitHub. Deployment fixes are currently uncommitted local changes.
-- Full backend suite: **331 passed, 2 warnings** after the image memory limits,
-  lazy M3 loading, notification routes, admin/dashboard routes, and M2 v2
-  persistence changes.
-- Render Blueprint: YAML parsing passed; not applied.
-- Frontend production build: **passed** with
-  `VITE_API_URL=https://freshguard-api.onrender.com` baked into the bundle.
-- In-memory Alembic migration from an empty SQLite database through `head`:
-  **passed**. This did not connect to or modify Neon.
-- CORS preflight against the configured frontend origin: **passed locally**.
-- Neon connection and migration against the actual project: not tested.
-- Render service creation, public health, CORS, hosted auth, inventory, notifications,
-  image inference, shelf-life workflows, sleep/wake, and hosted memory: not
-  tested. No public URL exists yet.
+The public frontend and API are hosted at the assigned URLs listed above. The
+current frontend bundle was verified to contain the obsolete
+`freshguard-api.onrender.com` hostname. On the actual API hostname, `/health`
+and `/demo/health` return 200, and an empty JSON POST to `/auth/login` returns
+422 validation (confirming the route exists without attempting authentication).
+The actual-host CORS preflight was rejected because the frontend origin was not
+allowed. The Render Blueprint now contains the assigned frontend and API
+origins. Production will remain mismatched until Render rebuilds the static
+site and restarts/redeploys the API with those environment values.
+
+No production credentials or user accounts were used for these checks.
 
 The Modal files are preserved, but this Render deployment does not invoke them.

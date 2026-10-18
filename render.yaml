@@ -20,7 +20,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGINS
-        value: https://freshguard-frontend.onrender.com
+        value: https://freshguard-frontend-qq1l.onrender.com
 
   - type: web
     name: freshguard-frontend
@@ -38,4 +38,4 @@ services:
       - key: NODE_VERSION
         value: 24.21.0
       - key: VITE_API_URL
-        value: https://freshguard-api.onrender.com
+        value: https://freshguard-api-mp6c.onrender.com
