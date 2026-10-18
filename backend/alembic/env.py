@@ -30,7 +30,10 @@ config = context.config
 
 # Override the sqlalchemy.url in alembic.ini with the value from database.py
 # so SQLite dev URL and PostgreSQL prod URL are both handled automatically.
-config.set_main_option("sqlalchemy.url", DATABASE_URL)
+# ConfigParser treats percent-encoded credentials (for example, %40) as
+# interpolation tokens. Escape them here; Config.get_main_option restores the
+# original URL before SQLAlchemy receives it.
+config.set_main_option("sqlalchemy.url", DATABASE_URL.replace("%", "%%"))
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
