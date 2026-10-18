@@ -1,26 +1,27 @@
 import io
 import os
 from contextlib import asynccontextmanager
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 from fastapi import FastAPI, Depends, HTTPException, Query, status, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from .analysis import router as analysis_router
 from .database import Base, engine, get_db
 from .m2_v2 import router as m2_v2_router
 from .m3 import router as m3_router
+from .notifications import router as notifications_router
 from .report_routes import router as reports_router
-from .models import User, FoodItem, ShelfLifePrediction
+from .models import User, FoodItem, FreshnessAnalysis, ShelfLifePrediction, StorageCondition
 from .schemas import (
     RegisterRequest, LoginRequest, UserResponse, TokenResponse,
     FoodCreate, FoodResponse, ExpiringSoonItem, ROLES,
     ProfileUpdateRequest, FoodUpdate,
 )
-from .auth import hash_password, verify_password, create_token, get_current_user
+from .auth import hash_password, verify_password, create_token, get_current_user, require_admin
 from .ml.assessment import is_model_ready
 
 
@@ -85,10 +86,109 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.middleware("http")
+async def add_security_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    return response
+
 app.include_router(analysis_router)
 app.include_router(m2_v2_router)
 app.include_router(m3_router)
+app.include_router(notifications_router)
 app.include_router(reports_router)
+
+
+def admin_platform_stats(db: Session) -> dict:
+    """Return platform totals and seven-day activity using portable datetimes."""
+    cutoff = datetime.utcnow() - timedelta(days=7)
+    return {
+        "total_users": db.scalar(select(func.count(User.id))) or 0,
+        "total_inventory_items": db.scalar(select(func.count(FoodItem.id))) or 0,
+        "total_analyses": db.scalar(select(func.count(FreshnessAnalysis.id))) or 0,
+        "total_predictions": db.scalar(select(func.count(ShelfLifePrediction.id))) or 0,
+        "total_storage_records": db.scalar(select(func.count(StorageCondition.id))) or 0,
+        "recent_analyses_7d": db.scalar(select(func.count(FreshnessAnalysis.id)).where(FreshnessAnalysis.created_at >= cutoff)) or 0,
+        "recent_predictions_7d": db.scalar(select(func.count(ShelfLifePrediction.id)).where(ShelfLifePrediction.created_at >= cutoff)) or 0,
+    }
+
+
+@app.get("/admin/users")
+def admin_users(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    require_admin(current_user)
+    users = db.scalars(select(User).order_by(User.id)).all()
+    return [
+        {"id": user.id, "full_name": user.full_name, "email": user.email, "role": user.role}
+        for user in users
+    ]
+
+
+@app.get("/admin/stats")
+def admin_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    require_admin(current_user)
+    return admin_platform_stats(db)
+
+
+@app.get("/dashboard/data")
+def dashboard_data(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    inventory = db.scalars(
+        select(FoodItem).where(FoodItem.created_by == current_user.id)
+        .order_by(FoodItem.created_at.desc())
+    ).all()
+    analyses = db.scalars(
+        select(FreshnessAnalysis).where(FreshnessAnalysis.user_id == current_user.id)
+        .order_by(FreshnessAnalysis.created_at.desc())
+    ).all()
+    predictions = db.scalars(
+        select(ShelfLifePrediction).where(ShelfLifePrediction.user_id == current_user.id)
+        .order_by(ShelfLifePrediction.created_at.desc())
+    ).all()
+    storage_conditions = db.scalars(
+        select(StorageCondition).where(StorageCondition.user_id == current_user.id)
+        .order_by(StorageCondition.observed_at.desc())
+    ).all()
+
+    data = {
+        "role": current_user.role,
+        "inventory": inventory,
+        "analyses": analyses,
+        "predictions": predictions,
+        "storage_conditions": storage_conditions,
+    }
+    if current_user.role == "administrator":
+        data["users"] = [
+            {"id": user.id, "full_name": user.full_name, "email": user.email, "role": user.role}
+            for user in db.scalars(select(User).order_by(User.id)).all()
+        ]
+        data["platform_stats"] = admin_platform_stats(db)
+    elif current_user.role == "retail_manager":
+        data["shelf_life_alerts"] = [p for p in predictions if p.remaining_shelf_life_days <= 3]
+        data["waste_insights"] = {
+            "expired_count": sum(item.expiry_date < date.today() for item in inventory),
+            "inventory_count": len(inventory),
+        }
+    elif current_user.role == "warehouse_operator":
+        data["environmental_analytics"] = {
+            "storage_records_count": len(storage_conditions),
+            "average_temperature_c": (
+                sum(row.temperature_c for row in storage_conditions) / len(storage_conditions)
+                if storage_conditions else None
+            ),
+        }
+    return data
 
 @app.get("/real/ml/health")
 def real_ml_health():

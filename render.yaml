@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: freshguard-api
+    branch: deploy/freshguard-free
+    runtime: python
+    plan: free
+    region: singapore
+    rootDir: backend
+    buildCommand: >-
+      pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.1.1+cpu torchvision==0.16.1+cpu && pip install --no-cache-dir -r requirements.txt
+    startCommand: >-
+      alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1 --limit-concurrency 1
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.19
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://freshguard-frontend.onrender.com
+
+  - type: web
+    name: freshguard-frontend
+    branch: deploy/freshguard-free
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_VERSION
+        value: 24.21.0
+      - key: VITE_API_URL
+        value: https://freshguard-api.onrender.com

@@ -69,3 +69,6 @@ backend/*.pptx
 **/.streamlit/secrets.toml
 **/.streamlit/credentials.toml
 **/.streamlit/cache/
+
+# Local Modal auth config; never publish credentials.
+deploy/.modal.toml

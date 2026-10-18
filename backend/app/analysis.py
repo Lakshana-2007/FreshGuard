@@ -1,8 +1,10 @@
+import io
 import json
 from collections import defaultdict
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Response, UploadFile, status
+from PIL import Image
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -17,6 +19,8 @@ router = APIRouter(prefix="/analysis", tags=["analysis"])
 
 _ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp", "image/bmp"}
 _MAX_IMAGE_BYTES = 10 * 1024 * 1024
+_MAX_IMAGE_DIMENSION = 4096
+_MAX_IMAGE_PIXELS = 4_000_000
 
 
 @router.post(
@@ -42,6 +46,28 @@ async def predict(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
             detail="Image must not exceed 10 MB",
         )
+
+    try:
+        with Image.open(io.BytesIO(image_bytes)) as uploaded_image:
+            width, height = uploaded_image.size
+            if width <= 0 or height <= 0 or width > _MAX_IMAGE_DIMENSION or height > _MAX_IMAGE_DIMENSION:
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail="Image dimensions exceed allowed limits",
+                )
+            if width * height > _MAX_IMAGE_PIXELS:
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail="Image pixel count exceeds allowed limits",
+                )
+            uploaded_image.verify()
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Uploaded image is malformed",
+        ) from exc
 
     if not is_model_ready():
         raise HTTPException(

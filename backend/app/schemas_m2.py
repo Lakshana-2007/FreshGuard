@@ -37,12 +37,15 @@ class M2DefectResult(BaseModel):
 
 
 class M2V2PredictionResponse(BaseModel):
+    id: int | None = None
+    item_name: str | None = None
     assessment_status: AssessmentStatus = "not_assessed"
     image_format: str
     image_width: int = Field(gt=0)
     image_height: int = Field(gt=0)
     category: M2CategoryResult
     freshness: M2FreshnessResult
+    visual_analysis: dict[str, dict]
     defects: list[M2DefectResult]
     limitations: list[str]
     safety_notice: str

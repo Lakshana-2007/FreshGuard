@@ -65,6 +65,38 @@ def test_notification_retrieval(client, consumer_headers, consumer_user, db):
     assert len(data["notifications"]) >= 1
 
 
+def test_notification_response_has_consistent_counts_when_empty(client, consumer_headers):
+    response = client.get("/notifications", headers=consumer_headers)
+    assert response.status_code == 200
+    assert response.json() == {
+        "notifications": [],
+        "unread_count": 0,
+        "total_count": 0,
+    }
+
+
+def test_user_cannot_mark_another_users_notification_read(
+    client, consumer_headers, retail_manager_user, db
+):
+    notification = Notification(
+        user_id=retail_manager_user.id,
+        notification_type="platform_notification",
+        severity="info",
+        title="Private notification",
+        message="Only its owner can read this notification.",
+    )
+    db.add(notification)
+    db.commit()
+    db.refresh(notification)
+
+    response = client.patch(
+        f"/notifications/{notification.id}/read", headers=consumer_headers
+    )
+    assert response.status_code == 404
+    db.refresh(notification)
+    assert notification.is_read is False
+
+
 def test_unread_notification_count(client, consumer_headers, consumer_user, db):
     """Test unread notification count endpoint."""
     # Create notifications

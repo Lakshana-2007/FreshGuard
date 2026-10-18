@@ -19,13 +19,10 @@ Unsupported categories (Avocado / unmapped) or out-of-domain requests raise RSLP
 
 import json
 import logging
+import threading
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Dict, Any, Optional
-
-import joblib
-import pandas as pd
-import numpy as np
 
 logger = logging.getLogger("freshguard.ml.rsl_predictor")
 
@@ -49,6 +46,7 @@ class RSLPredictor:
     def __init__(self):
         self._models: Dict[str, Any] = {}
         self._registry: Dict[str, Any] = {}
+        self._model_lock = threading.Lock()
         self._load_registry_and_models()
 
     def _load_registry_and_models(self):
@@ -63,19 +61,7 @@ class RSLPredictor:
             except Exception as e:
                 logger.error(f"Error reading model registry: {e}")
 
-        for category in REAL_CATEGORIES:
-            if category in self._registry and self._registry[category].get("status") != "BLOCKED":
-                model_file = self._registry[category].get("model_file")
-                if model_file:
-                    full_model_path = SAVED_MODELS_DIR / model_file
-                    if full_model_path.exists():
-                        try:
-                            self._models[category] = joblib.load(full_model_path)
-                            logger.info(f"Loaded production ML model for '{category}' from {full_model_path.name}")
-                        except Exception as ex:
-                            logger.error(f"Failed to load model for '{category}': {ex}")
-
-        # 2. Load Synthetic Demonstration Models (DATA_TYPE = SYNTHETIC)
+        # Keep only registry metadata in memory during startup.
         if SYNTHETIC_REGISTRY_PATH.exists():
             try:
                 with open(SYNTHETIC_REGISTRY_PATH, "r", encoding="utf-8") as f:
@@ -85,17 +71,34 @@ class RSLPredictor:
             except Exception as e:
                 logger.error(f"Error reading synthetic model registry: {e}")
 
-        for category in SYNTHETIC_CATEGORIES:
-            if category in self._registry:
-                model_file = self._registry[category].get("model_file")
-                if model_file:
-                    full_model_path = SAVED_MODELS_DIR / model_file
-                    if full_model_path.exists():
-                        try:
-                            self._models[category] = joblib.load(full_model_path)
-                            logger.info(f"Loaded synthetic demonstration model for '{category}' from {full_model_path.name}")
-                        except Exception as ex:
-                            logger.error(f"Failed to load synthetic model for '{category}': {ex}")
+        # Pipelines are loaded on the first request for their category.
+
+    def _load_model(self, category: str):
+        """Load the requested pipeline and retain at most one model in memory."""
+        with self._model_lock:
+            if category in self._models:
+                return self._models[category]
+            info = self._registry.get(category)
+            if not info or info.get("status") == "BLOCKED":
+                return None
+            model_file = info.get("model_file")
+            if not model_file:
+                return None
+            model_path = SAVED_MODELS_DIR / model_file
+            if not model_path.is_file():
+                logger.error("Model file for '%s' is missing", category)
+                return None
+            try:
+                import joblib
+
+                model = joblib.load(model_path)
+            except Exception:
+                logger.exception("Failed to load model for '%s'", category)
+                return None
+            self._models.clear()
+            self._models[category] = model
+            logger.info("Loaded %s model for '%s'", info.get("data_type", "production"), category)
+            return model
 
     def normalize_category(self, raw_category: str) -> str:
         """Map user-supplied food type string to an approved ML category key."""
@@ -141,14 +144,20 @@ class RSLPredictor:
         category = self.normalize_category(raw_food_type)
 
         # 1. Reject unsupported / non-approved categories (HTTP 422)
-        if category not in APPROVED_CATEGORIES or category not in self._models:
+        if category not in APPROVED_CATEGORIES:
             logger.warning(f"Prediction rejected for unsupported category: '{raw_food_type}' (mapped to '{category}')")
+            raise RSLPredictionError("ML shelf-life prediction is currently unsupported for this food category.")
+
+        model_pipeline = self._load_model(category)
+        if model_pipeline is None:
+            logger.warning("Prediction rejected because no usable model is available for '%s'", category)
             raise RSLPredictionError("ML shelf-life prediction is currently unsupported for this food category.")
 
         model_info = self._registry[category]
         domain = model_info["domain"]
-        model_pipeline = self._models[category]
         data_type = model_info.get("data_type", "REAL/TRACEABLE")
+
+        import pandas as pd
 
         # Extract & validate input features
         temp = float(payload.get("temperature_c", 0.0))
