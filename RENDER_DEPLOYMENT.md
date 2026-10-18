@@ -10,8 +10,8 @@ PostgreSQL project; it does not create a second database.
 - `freshguard-frontend`: Render Free Static Site, React/Vite CDN, SPA rewrite to
   `index.html`. Its build receives the backend HTTPS URL through `VITE_API_URL`.
 - `freshguard-api`: Render Free Web Service, FastAPI, CPU-only PyTorch, one
-  Uvicorn worker, one concurrent request, and at most one in-memory M3 pipeline
-  at a time.
+  Uvicorn worker, up to ten concurrent requests (including Render health
+  probes), and at most one in-memory M3 pipeline at a time.
 - Existing Neon project: Free plan must be confirmed in its console. Current
   published Free limits are 1 GB storage and 100 compute-unit hours per project
   per month; compute can scale to zero and is capped at 2 CU. The project is not
