@@ -5,6 +5,9 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
+from app.database import Base
+import app.models  # noqa: F401 - register the core application tables
+
 
 revision: str = "20261015_01"
 down_revision: Union[str, Sequence[str], None] = "7d97512829cb"
@@ -13,6 +16,13 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    # The historical baseline revision was published as a no-op. Create only
+    # missing core application tables before adding the M2 foreign key. SQLAlchemy
+    # checkfirst leaves existing tables and their data untouched. Keep the M2
+    # table in this revision below so its indexes and schema remain explicit.
+    core_tables = [table for table in Base.metadata.sorted_tables if table.name != "m2_analyses"]
+    Base.metadata.create_all(bind=op.get_bind(), tables=core_tables)
+
     op.create_table(
         "m2_analyses",
         sa.Column("id", sa.Integer(), primary_key=True),
